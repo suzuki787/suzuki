@@ -1,27 +1,862 @@
-yerda ... */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: #1e1e1e; }
-        .card { background: #111; padding: 20px; cursor: pointer; transition: 0.3s; }
-        .door-path { transition: transform 0.5s; transform-origin: left; }
-        .card.door-open .door-path { transform: rotateY(-45deg); }
-    </style>
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#080808"/>
+<title>Mercedes-Benz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --black:#080808;--deep:#0d0d0d;--panel:#111;--border:#1e1e1e;
+  --gold:#c9a84c;--gold-l:#e2c47a;--gold-d:#7a6030;
+  --white:#f5f0e8;--muted:#686260;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Raleway',sans-serif;
+  --card-perspective:900px;
+}
+html{scroll-behavior:smooth;height:100%}
+body{
+  background:var(--black);color:var(--white);
+  font-family:var(--sans);font-weight:300;
+  min-height:100%;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23080808'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%230a0a0a'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%230a0a0a'/%3E%3C/svg%3E");
+}
+
+/* ─── HEADER ─── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:60px;padding:0 4vw;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,8,8,.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-ring{
+  width:30px;height:30px;border-radius:50%;
+  border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.logo-ring svg{width:14px;height:14px}
+.logo-name{font-size:.62rem;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-l)}
+
+/* Language switcher */
+.lang-sw{display:flex;gap:2px;background:var(--border);padding:3px;border-radius:2px}
+.lang-btn{
+  font-family:var(--sans);font-size:.6rem;font-weight:400;
+  letter-spacing:.18em;text-transform:uppercase;
+  padding:5px 11px;border:none;cursor:pointer;
+  background:transparent;color:var(--muted);
+  border-radius:1px;transition:all .25s;
+}
+.lang-btn.active{background:var(--gold);color:var(--black);font-weight:500}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:80px 5vw 60px;position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(201,168,76,.07) 0%,transparent 70%);
+}
+.hero-rule{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 2rem;opacity:0;animation:up .7s .1s forwards}
+.hero-eye{font-size:.58rem;font-weight:300;letter-spacing:.44em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;opacity:0;animation:up .7s .2s forwards}
+.hero-title{
+  font-family:var(--serif);font-weight:300;
+  font-size:clamp(3.2rem,11vw,7.5rem);
+  line-height:.9;color:var(--white);
+  opacity:0;animation:up .8s .35s forwards;
+}
+.hero-title span{display:block;font-style:italic;color:var(--gold-l)}
+.hero-sub{
+  font-size:clamp(.58rem,2.5vw,.75rem);font-weight:200;
+  letter-spacing:.54em;text-transform:uppercase;color:var(--muted);
+  margin-top:1.6rem;opacity:0;animation:up .7s .52s forwards;
+}
+.hero-btn{
+  margin-top:2.8rem;opacity:0;animation:up .7s .68s forwards;
+  font-family:var(--sans);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;
+  font-weight:500;padding:13px 34px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-d));
+  color:var(--black);border:none;cursor:pointer;
+  clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0 100%);
+  transition:filter .3s,transform .3s;
+}
+.hero-btn:active{transform:scale(.97)}
+
+/* ─── SECTION ─── */
+.showroom{padding:60px 3vw 80px}
+.sec-div{display:flex;align-items:center;gap:1rem;margin-bottom:3rem}
+.sec-div::before,.sec-div::after{content:'';flex:1;height:1px}
+.sec-div::before{background:linear-gradient(90deg,transparent,var(--border))}
+.sec-div::after{background:linear-gradient(90deg,var(--border),transparent)}
+.sec-orn{font-size:.5rem;letter-spacing:.46em;color:var(--gold-d);text-transform:uppercase;white-space:nowrap}
+.sec-head{text-align:center;margin-bottom:3.5rem}
+.sec-eye{font-size:.56rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem}
+.sec-title{font-family:var(--serif);font-weight:300;font-size:clamp(1.7rem,5vw,3rem);line-height:1.1}
+.sec-title em{font-style:italic;color:var(--gold-l)}
+
+/* ─── GRID ─── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);
+  max-width:900px;margin:0 auto;
+}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+
+/* ─── CARD ─── */
+.card{
+  background:var(--panel);
+  position:relative;isolation:isolate;
+  cursor:pointer;
+  transition:box-shadow .4s;
+  /* 3D container */
+  perspective:var(--card-perspective);
+  -webkit-perspective:var(--card-perspective);
+}
+.card-inner{
+  width:100%;
+  transform-style:preserve-3d;
+  transition:transform .15s ease-out;
+  will-change:transform;
+}
+/* Touch/hover 3D tilt — handled by JS for precise tracking */
+.card:hover{box-shadow:0 16px 48px rgba(0,0,0,.7),0 0 0 1px var(--gold-d)}
+
+/* ─── SVG AREA ─── */
+.card-img{
+  position:relative;height:190px;
+  background:var(--deep);overflow:hidden;
+}
+.card-img svg{width:100%;height:100%;display:block}
+.card-shimmer{
+  position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(201,168,76,.06) 50%,transparent 70%);
+  transform:translateX(-120%);
+  transition:transform .8s ease;pointer-events:none;
+}
+.card:hover .card-shimmer{transform:translateX(160%)}
+.badge{
+  position:absolute;top:10px;right:10px;
+  font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--gold);background:rgba(8,8,8,.85);
+  border:1px solid var(--gold-d);padding:3px 10px;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  pointer-events:none;
+}
+
+/* ─── DOOR ANIMATION ─── */
+/* Each car SVG has a .door-path element that will animate */
+.door-path{
+  transform-origin:0% 50%; /* hinge at left edge */
+  transition:transform .55s cubic-bezier(.23,1,.32,1);
+  will-change:transform;
+}
+.card.door-open .door-path{
+  transform:perspective(200px) rotateY(-38deg);
+}
+
+/* ─── CARD BODY ─── */
+.card-body{padding:1.3rem 1.4rem 1.5rem}
+.card-accent{width:24px;height:1px;background:var(--gold);margin-bottom:.9rem;transition:width .4s}
+.card:hover .card-accent{width:40px}
+.card-name{font-family:var(--serif);font-weight:300;font-size:1.6rem;line-height:1;margin-bottom:.22rem}
+.card-sub{font-size:.55rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem}
+.card-desc{font-size:.73rem;line-height:1.68;color:var(--muted);margin-bottom:1.1rem}
+.card-specs{display:flex;gap:1.2rem;padding-bottom:1.1rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border)}
+.spec b{font-family:var(--serif);font-size:1.1rem;color:var(--white);display:block;line-height:1;font-weight:300}
+.spec s{font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-d);display:block;margin-top:2px;text-decoration:none}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:.8rem}
+.price-lbl{font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block}
+.price-val{font-family:var(--serif);font-size:1.2rem;color:var(--gold-l);line-height:1;display:block}
+.btn-buy{
+  font-family:var(--sans);font-size:.56rem;letter-spacing:.28em;text-transform:uppercase;
+  font-weight:400;padding:10px 18px;flex-shrink:0;
+  background:transparent;color:var(--gold);
+  border:1px solid var(--gold-d);cursor:pointer;
+  clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0 100%);
+  position:relative;overflow:hidden;
+  transition:color .3s,border-color .3s;
+}
+.btn-buy::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold-d));
+  opacity:0;transition:opacity .3s;
+}
+.btn-buy:active::before{opacity:1}
+.btn-buy:active{color:var(--black)}
+.btn-buy span{position:relative;z-index:1}
+
+/* ─── FOOTER ─── */
+footer{border-top:1px solid var(--border);padding:2rem 5vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem}
+.foot-brand{font-family:var(--serif);font-size:.95rem;font-weight:300;color:var(--muted)}
+.foot-brand strong{color:var(--gold);font-weight:400}
+.foot-copy{font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--border)}
+
+/* ─── MODAL ─── */
+.modal-bg{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.9);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:0 0 env(safe-area-inset-bottom,0);
+  visibility:hidden;opacity:0;
+  transition:opacity .3s,visibility 0s .3s;
+}
+.modal-bg.open{visibility:visible;opacity:1;transition:opacity .3s}
+.modal-box{
+  background:var(--panel);
+  border:1px solid var(--gold-d);
+  border-bottom:none;
+  padding:2.2rem 2rem 2.4rem;
+  width:100%;max-width:520px;
+  position:relative;
+  transform:translateY(30px);
+  transition:transform .35s cubic-bezier(.23,1,.32,1);
+  border-radius:4px 4px 0 0;
+}
+.modal-bg.open .modal-box{transform:translateY(0)}
+.modal-handle{
+  width:36px;height:3px;border-radius:2px;
+  background:var(--border);margin:0 auto 1.8rem;cursor:pointer;
+}
+.m-corner{position:absolute;width:14px;height:14px}
+.m-corner.tl{top:-1px;left:-1px;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
+.m-corner.tr{top:-1px;right:-1px;border-top:2px solid var(--gold);border-right:2px solid var(--gold)}
+.modal-orn{color:var(--gold);font-size:1.4rem;text-align:center;margin-bottom:.6rem;line-height:1}
+.modal-title{font-family:var(--serif);font-size:1.6rem;font-weight:300;text-align:center;margin-bottom:.2rem}
+.modal-sub{font-size:.56rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:1rem}
+.modal-txt{font-size:.74rem;line-height:1.7;color:var(--muted);text-align:center;margin-bottom:1.6rem}
+.modal-txt strong{color:var(--white);font-weight:400}
+.modal-cta{
+  width:100%;font-family:var(--sans);font-size:.62rem;
+  letter-spacing:.28em;text-transform:uppercase;font-weight:500;
+  padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold-d));
+  color:var(--black);border:none;cursor:pointer;
+  clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0 100%);
+  transition:filter .3s;
+}
+.modal-cta:active{filter:brightness(1.15)}
+
+/* ─── KEYFRAMES ─── */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── TOUCH 3D TILT ─── */
+@media(hover:hover){
+  .card-inner:hover{/* JS handles the values */}
+}
+</style>
 </head>
 <body>
 
-    <div class="grid" id="grid"></div>
+<header>
+  <div class="logo">
+    <div class="logo-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round">
+        <line x1="12" y1="2" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <line x1="5" y1="5" x2="19" y2="19"/>
+        <line x1="19" y1="5" x2="5" y2="19"/>
+      </svg>
+    </div>
+    <span class="logo-name">Mercedes-Benz</span>
+  </div>
+  <div class="lang-sw" role="group" aria-label="Language">
+    <button class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
+    <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+  </div>
+</header>
 
-    <script>
-        // Siz yuborgan barcha CARS ma'lumotlari va SVGS kodlari
-        const CARS = [ /* 6 ta modelning barchasi */ ];
-        const SVGS = { /* 6 ta modelning SVG kodlari */ };
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-rule"></div>
+  <p class="hero-eye" data-i18n="eyebrow">Shtutgart · 1926-yildan</p>
+  <h1 class="hero-title">Mercedes<span>&amp; Benz</span></h1>
+  <p class="hero-sub" data-i18n="slogan">Eng yaxshisi yoki hech narsa</p>
+  <button class="hero-btn" data-i18n="explore" onclick="document.querySelector('.showroom').scrollIntoView({behavior:'smooth'})">Modellarni ko'rish</button>
+</section>
 
-        // Siz yuborgan barcha funksiyalar (renderGrid, setLang, 3D tilt)
-        function renderGrid() { /* ... */ }
-        
-        // Asosiy ishga tushirish
-        renderGrid();
-    </script>
+<!-- SHOWROOM -->
+<section class="showroom">
+  <div class="sec-div"><span class="sec-orn">✦ &nbsp;<span data-i18n="collection">Kolleksiya</span>&nbsp; ✦</span></div>
+  <div class="sec-head">
+    <p class="sec-eye" data-i18n="crafted">Qo'lda yaratilgan mukammallik</p>
+    <h2 class="sec-title" data-i18n="select">O'z <em>Shederingizni</em> tanlang</h2>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>
+  <span class="foot-brand"><strong>Mercedes-Benz</strong> · Luxury Automobiles</span>
+  <span class="foot-copy">© 2026</span>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="m-corner tl"></div><div class="m-corner tr"></div>
+    <div class="modal-handle" onclick="closeModal()"></div>
+    <div class="modal-orn">✦</div>
+    <h3 class="modal-title" id="m-title"></h3>
+    <p class="modal-sub" data-i18n="config">Konfiguratsiya so'rovi</p>
+    <p class="modal-txt" id="m-body"></p>
+    <button class="modal-cta" id="m-cta" onclick="closeModal()"></button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════
+const CARS = [
+  {
+    id:'sclass',
+    badge:'S-Class',
+    price:'$114,900',
+    specs:{hp:'496',t60:'4.4s',top:'155'},
+    uz:{
+      name:'S-Class',
+      sub:'Hashamatli sedan · W223',
+      desc:"Avtomobil mukammalligining cho'qqisi. Har bir detal, har bir material avlodlar davomida izlanishlar bilan sayqallangan. To'rt g'ildirakdagi birinchi klass.",
+      from:'dan boshlab',
+      buy:"So'rov yuborish",
+      mtxt:'Mercedes-Benz S-Class uchun qiziqish bildirganingiz uchun rahmat. Shaxsiy konsultatsiya uchun brend vakili siz bilan 24 soat ichida bog\'lanadi.',
+      mcta:"Tasdiqlash"
+    },
+    ru:{
+      name:'S-Класс',
+      sub:'Представительский седан · W223',
+      desc:'Вершина автомобильного совершенства. Каждая деталь, каждый материал отточен поколениями настойчивых поисков. Первый класс на четырёх колёсах.',
+      from:'от',
+      buy:'Запросить',
+      mtxt:'Благодарим вас за интерес к Mercedes-Benz S-Класс. Бренд-амбассадор свяжется с вами в течение 24 часов для организации частной консультации.',
+      mcta:'Подтвердить'
+    }
+  },
+  {
+    id:'gwagon',
+    badge:'G-Class',
+    price:'$139,900',
+    specs:{hp:'577',t60:'4.5s',top:'137'},
+    uz:{
+      name:'G-Vagon',
+      sub:'Hashamatli SUV · W464',
+      desc:"Jang maydonida tug'ilgan, shahar ko'chalari uchun parvarish topgan. Afsonaviy yo'l tanlamas qobiliyat va qo'lda yaratilgan hashamat timsoli.",
+      from:'dan boshlab',
+      buy:"So'rov yuborish",
+      mtxt:"Mercedes-Benz G-Vagon uchun qiziqish bildirganingiz uchun rahmat. Shaxsiy konfiguratsiya sessiyasi uchun vakil siz bilan bog'lanadi.",
+      mcta:'Tasdiqlash'
+    },
+    ru:{
+      name:'G-Вагон',
+      sub:'Внедорожник класса люкс · W464',
+      desc:'Рождён на поле боя, усовершенствован для бульвара. Икона несокрушимого характера с легендарными внедорожными возможностями и ручной отделкой.',
+      from:'от',
+      buy:'Запросить',
+      mtxt:'Благодарим за интерес к Mercedes-Benz G-Вагон. Представитель бренда свяжется с вами для индивидуальной консультации.',
+      mcta:'Подтвердить'
+    }
+  },
+  {
+    id:'amggt',
+    badge:'AMG GT',
+    price:'$164,900',
+    specs:{hp:'720',t60:'3.2s',top:'196'},
+    uz:{
+      name:'AMG GT',
+      sub:"Yuqori tezlikli kupe · C192",
+      desc:'Bir nafas ustaning qo\'li bilan yaratilgan. Poyga treki aniqligi va yo\'l konfiguratsiyasi — muayyan agressivlik va kuchning heykali.',
+      from:'dan boshlab',
+      buy:"So'rov yuborish",
+      mtxt:"Mercedes-Benz AMG GT uchun qiziqish bildirganingiz uchun rahmat. Xususiy test-haydash uchun AMG mutaxassisi siz bilan bog'lanadi.",
+      mcta:'Tasdiqlash'
+    },
+    ru:{
+      name:'AMG GT',
+      sub:'Высококлассное купе · C192',
+      desc:'Собран руками одного мастера AMG. Точность гоночной трассы, воплощённая в дорожном автомобиле — скульптура контролируемой агрессии и мощи.',
+      from:'от',
+      buy:'Запросить',
+      mtxt:'Благодарим за интерес к Mercedes-Benz AMG GT. Специалист AMG свяжется с вами для организации эксклюзивного тест-драйва.',
+      mcta:'Подтвердить'
+    }
+  },
+  {
+    id:'maybach',
+    badge:'Maybach',
+    price:'$199,900',
+    specs:{hp:'621',t60:'4.8s',top:'155'},
+    uz:{
+      name:'Maybach',
+      sub:'Ultra-hashamat · Z223',
+      desc:"Avtomobil injiniringi san'atga aylanuvchi joy. Maybach S-Klasi shaxsiy hashamatni qayta belgilaydi — faqat eng zo'rini qabul qiluvchilar uchun yashirin boshpana.",
+      from:'dan boshlab',
+      buy:"So'rov yuborish",
+      mtxt:"Mercedes-Maybach uchun qiziqish bildirganingiz uchun rahmat. Shaxsiy brend vakili eksklyuziv tanishuv uchun siz bilan bog'lanadi.",
+      mcta:'Tasdiqlash'
+    },
+    ru:{
+      name:'Maybach',
+      sub:'Ультра-люкс · Z223',
+      desc:'Место, где автомобильная инженерия превращается в искусство. Mercedes-Maybach S-Класс переосмысляет личный люкс — убежище для тех, кто принимает только абсолютно лучшее.',
+      from:'от',
+      buy:'Запросить',
+      mtxt:'Благодарим за интерес к Mercedes-Maybach. Личный бренд-консьерж свяжется с вами для эксклюзивного знакомства.',
+      mcta:'Подтвердить'
+    }
+  },
+  {
+    id:'eqs',
+    badge:'EQS',
+    price:'$104,400',
+    specs:{hp:'516',t60:'4.1s',top:'350mi'},
+    uz:{
+      name:'EQS 580',
+      sub:'Elektr hashamat · V297',
+      desc:"Hashamatning kelajagi, jim ravishda mukammallashtirilgan. 563 km quvvat zahirasi va inqilobiy Hyperscreen bilan EQS avtomobil bo'lishi mumkinligini qayta tasavvur qiladi.",
+      from:'dan boshlab',
+      buy:"So'rov yuborish",
+      mtxt:"Mercedes-Benz EQS uchun qiziqish bildirganingiz uchun rahmat. Elektr harakatlanish bo'yicha maslahatchi siz bilan bog'lanadi.",
+      mcta:'Tasdiqlash'
+    },
+    ru:{
+      name:'EQS 580',
+      sub:'Электрический люкс · V297',
+      desc:'Будущее роскоши, воплощённое в тишине. С запасом хода 563 км и революционным Hyperscreen EQS переосмысляет возможности автомобиля.',
+      from:'от',
+      buy:'Запросить',
+      mtxt:'Благодарим за интерес к Mercedes-Benz EQS. Консультант по электромобилям свяжется с вами в ближайшее время.',
+      mcta:'Подтвердить'
+    }
+  },
+  {
+    id:'eclass',
+    badge:'E-Class',
+    price:'$64,100',
+    specs:{hp:'429',t60:'4.9s',top:'155'},
+    uz:{
+      name:'E-Class',
+      sub:'Ijroiya sedan · W214',
+      desc:"Ambitsiya va nafislikning mukammal muvozanati. Yangi E-Klasi ilg'or texnologiya va abadiy dizayn bilan ijroiya sayohati standartini oshiradi.",
+      from:'dan boshlab',
+      buy:"So'rov yuborish",
+      mtxt:"Mercedes-Benz E-Klasi uchun qiziqish bildirganingiz uchun rahmat. Avtomobil bo'yicha mutaxassis siz bilan bog'lanadi.",
+      mcta:'Tasdiqlash'
+    },
+    ru:{
+      name:'Е-Класс',
+      sub:'Бизнес-седан · W214',
+      desc:'Идеальный баланс амбиций и элегантности. Новый Е-Класс поднимает стандарты деловых поездок с прогрессивными технологиями и вневременным дизайном.',
+      from:'от',
+      buy:'Запросить',
+      mtxt:'Благодарим за интерес к Mercedes-Benz Е-Класс. Специалист по продукту свяжется с вами в ближайшее время.',
+      mcta:'Подтвердить'
+    }
+  }
+];
+
+// i18n strings (UI chrome)
+const I18N = {
+  uz:{
+    eyebrow:'Shtutgart · 1926-yildan',
+    slogan:'Eng yaxshisi yoki hech narsa',
+    explore:"Modellarni ko'rish",
+    collection:'Kolleksiya',
+    crafted:"Qo'lda yaratilgan mukammallik",
+    select:"O'z <em>Shederingizni</em> tanlang",
+    config:"Konfiguratsiya so'rovi",
+    hp:'Ot kuchi', t60:'0–100 km/s', top:'Top tezlik',
+    from:'dan boshlab'
+  },
+  ru:{
+    eyebrow:'Штутгарт · с 1926 года',
+    slogan:'Лучшее или ничего',
+    explore:'Смотреть модели',
+    collection:'Коллекция',
+    crafted:'Изготовлено вручную',
+    select:'Выберите своё <em>Произведение</em>',
+    config:'Запрос конфигурации',
+    hp:'Лошадиные силы', t60:'0–100 км/ч', top:'Макс. скорость',
+    from:'от'
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+//  SVG DEFINITIONS — each has a door-path group
+// ═══════════════════════════════════════════════════════
+const SVGS = {
+  sclass:`<svg viewBox="0 0 480 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#141414"/><stop offset="100%" stop-color="#080808"/></linearGradient>
+    <linearGradient id="bd1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#282828"/><stop offset="100%" stop-color="#0d0d0d"/></linearGradient>
+    <linearGradient id="gl1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity=".13"/><stop offset="100%" stop-color="#c9a84c" stop-opacity=".02"/></linearGradient>
+  </defs>
+  <rect width="480" height="190" fill="url(#b1)"/>
+  <ellipse cx="240" cy="166" rx="174" ry="8" fill="rgba(201,168,76,.04)"/>
+  <circle cx="138" cy="152" r="26" fill="#0d0d0d" stroke="#242424" stroke-width="1.5"/><circle cx="138" cy="152" r="17" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="138" cy="152" r="6" fill="#c9a84c" opacity=".5"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="138" y1="135" x2="138" y2="169"/><line x1="121" y1="152" x2="155" y2="152"/><line x1="126" y1="139" x2="150" y2="165"/><line x1="150" y1="139" x2="126" y2="165"/></g>
+  <circle cx="344" cy="152" r="26" fill="#0d0d0d" stroke="#242424" stroke-width="1.5"/><circle cx="344" cy="152" r="17" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="344" cy="152" r="6" fill="#c9a84c" opacity=".5"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="344" y1="135" x2="344" y2="169"/><line x1="327" y1="152" x2="361" y2="152"/><line x1="332" y1="139" x2="356" y2="165"/><line x1="356" y1="139" x2="332" y2="165"/></g>
+  <path d="M68 152 L72 124 Q90 98 126 88 L182 70 Q214 60 248 60 Q284 60 316 70 L368 88 Q406 102 412 124 L414 152Z" fill="url(#bd1)" stroke="#1e1e1e" stroke-width=".8"/>
+  <path d="M180 90 Q212 66 248 62 Q286 62 318 72 L366 90 Q328 76 248 74 Q212 74 180 90Z" fill="#1a1a1a"/>
+  <path d="M188 88 L220 66 Q248 60 278 62 L308 70 L294 92Z" fill="url(#gl1)" stroke="#c9a84c" stroke-width=".5" opacity=".9"/>
+  <path d="M298 92 L312 70 L346 84 L338 96Z" fill="url(#gl1)" stroke="#c9a84c" stroke-width=".5" opacity=".7"/>
+  <path d="M70 106 Q82 96 106 96 L114 112 L70 114Z" fill="#0d0d0d" stroke="#c9a84c" stroke-width=".7"/>
+  <line x1="76" y1="105" x2="108" y2="104" stroke="#c9a84c" stroke-width=".9" opacity=".7"/>
+  <path d="M402 102 L414 110 L414 124 L402 122Z" fill="#c9a84c" opacity=".18" stroke="#c9a84c" stroke-width=".6"/>
+  <path d="M70 120 Q244 112 414 120" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".38"/>
+  <!-- DOOR (front) — animates on click -->
+  <g class="door-path">
+    <path d="M174 96 L198 152 L278 152 L278 100 Q248 86 210 88Z" fill="#202020" stroke="#1a1a1a" stroke-width=".6"/>
+    <line x1="174" y1="96" x2="198" y2="152" stroke="#111" stroke-width="1"/>
+    <path d="M192 128 Q195 126 198 128 Q195 130 192 128Z" fill="#c9a84c" opacity=".5"/>
+  </g>
+  <line x1="280" y1="98" x2="280" y2="152" stroke="#111" stroke-width="1.2"/>
+</svg>`,
+
+  gwagon:`<svg viewBox="0 0 480 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#141210"/><stop offset="100%" stop-color="#080808"/></linearGradient>
+    <linearGradient id="bd2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#252220"/><stop offset="100%" stop-color="#0e0c0a"/></linearGradient>
+    <linearGradient id="gl2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity=".11"/><stop offset="100%" stop-color="#c9a84c" stop-opacity=".02"/></linearGradient>
+  </defs>
+  <rect width="480" height="190" fill="url(#b2)"/>
+  <ellipse cx="240" cy="168" rx="180" ry="8" fill="rgba(201,168,76,.05)"/>
+  <circle cx="124" cy="154" r="28" fill="#0d0d0d" stroke="#242424" stroke-width="1.5"/><circle cx="124" cy="154" r="19" fill="#080808" stroke="#c9a84c" stroke-width="1"/><circle cx="124" cy="154" r="7" fill="#c9a84c" opacity=".44"/>
+  <g stroke="#1d1d1d" stroke-width="1.5"><line x1="124" y1="135" x2="124" y2="173"/><line x1="105" y1="154" x2="143" y2="154"/><line x1="111" y1="141" x2="137" y2="167"/><line x1="137" y1="141" x2="111" y2="167"/></g>
+  <circle cx="356" cy="154" r="28" fill="#0d0d0d" stroke="#242424" stroke-width="1.5"/><circle cx="356" cy="154" r="19" fill="#080808" stroke="#c9a84c" stroke-width="1"/><circle cx="356" cy="154" r="7" fill="#c9a84c" opacity=".44"/>
+  <g stroke="#1d1d1d" stroke-width="1.5"><line x1="356" y1="135" x2="356" y2="173"/><line x1="337" y1="154" x2="375" y2="154"/><line x1="343" y1="141" x2="369" y2="167"/><line x1="369" y1="141" x2="343" y2="167"/></g>
+  <rect x="70" y="76" width="344" height="80" rx="2" fill="url(#bd2)" stroke="#1e1e1e" stroke-width=".8"/>
+  <rect x="84" y="68" width="316" height="10" rx="2" fill="#161616" stroke="#1e1e1e" stroke-width=".8"/>
+  <line x1="104" y1="68" x2="104" y2="76" stroke="#1e1e1e" stroke-width="1.2"/><line x1="198" y1="68" x2="198" y2="76" stroke="#1e1e1e" stroke-width="1.2"/><line x1="290" y1="68" x2="290" y2="76" stroke="#1e1e1e" stroke-width="1.2"/><line x1="378" y1="68" x2="378" y2="76" stroke="#1e1e1e" stroke-width="1.2"/>
+  <rect x="98" y="80" width="112" height="52" rx="2" fill="url(#gl2)" stroke="#c9a84c" stroke-width=".6" opacity=".9"/>
+  <rect x="218" y="82" width="76" height="48" rx="2" fill="url(#gl2)" stroke="#c9a84c" stroke-width=".5" opacity=".75"/>
+  <rect x="302" y="82" width="64" height="48" rx="2" fill="url(#gl2)" stroke="#c9a84c" stroke-width=".5" opacity=".6"/>
+  <rect x="72" y="88" width="24" height="22" rx="1" fill="#0a0a0a" stroke="#c9a84c" stroke-width=".7"/>
+  <rect x="76" y="92" width="16" height="6" rx="1" fill="#c9a84c" opacity=".2"/>
+  <rect x="384" y="88" width="22" height="26" rx="1" fill="#c9a84c" opacity=".13" stroke="#c9a84c" stroke-width=".6"/>
+  <line x1="70" y1="132" x2="414" y2="132" stroke="#c9a84c" stroke-width=".7" opacity=".35"/>
+  <!-- DOOR — G-wagon front door -->
+  <g class="door-path">
+    <rect x="98" y="80" width="112" height="76" rx="0" fill="#1e1c1a" stroke="#111" stroke-width=".6"/>
+    <line x1="98" y1="80" x2="98" y2="154" stroke="#0d0d0d" stroke-width="1.2"/>
+    <circle cx="204" cy="118" r="3" fill="#c9a84c" opacity=".5"/>
+  </g>
+  <line x1="216" y1="76" x2="216" y2="154" stroke="#111" stroke-width="2"/>
+  <line x1="298" y1="76" x2="298" y2="154" stroke="#111" stroke-width="2"/>
+  <circle cx="408" cy="130" r="16" fill="#0e0e0e" stroke="#1e1e1e" stroke-width="1.2" opacity=".7"/>
+  <circle cx="408" cy="130" r="9" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".35"/>
+</svg>`,
+
+  amggt:`<svg viewBox="0 0 480 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="b3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#120908"/><stop offset="100%" stop-color="#080808"/></linearGradient>
+    <linearGradient id="bd3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#221510"/><stop offset="100%" stop-color="#0a0808"/></linearGradient>
+    <linearGradient id="gl3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity=".15"/><stop offset="100%" stop-color="#c9a84c" stop-opacity=".02"/></linearGradient>
+  </defs>
+  <rect width="480" height="190" fill="url(#b3)"/>
+  <ellipse cx="240" cy="170" rx="190" ry="8" fill="rgba(201,168,76,.05)"/>
+  <circle cx="116" cy="154" r="26" fill="#0a0a0a" stroke="#1e1e1e" stroke-width="1.5"/><circle cx="116" cy="154" r="17" fill="#080808" stroke="#c9a84c" stroke-width="1"/><circle cx="116" cy="154" r="6" fill="#c9a84c" opacity=".5"/>
+  <g stroke="#1c1c1c" stroke-width="1.5"><line x1="116" y1="137" x2="116" y2="171"/><line x1="99" y1="154" x2="133" y2="154"/><line x1="104" y1="141" x2="128" y2="167"/><line x1="128" y1="141" x2="104" y2="167"/></g>
+  <circle cx="358" cy="154" r="26" fill="#0a0a0a" stroke="#1e1e1e" stroke-width="1.5"/><circle cx="358" cy="154" r="17" fill="#080808" stroke="#c9a84c" stroke-width="1"/><circle cx="358" cy="154" r="6" fill="#c9a84c" opacity=".5"/>
+  <g stroke="#1c1c1c" stroke-width="1.5"><line x1="358" y1="137" x2="358" y2="171"/><line x1="341" y1="154" x2="375" y2="154"/><line x1="346" y1="141" x2="370" y2="167"/><line x1="370" y1="141" x2="346" y2="167"/></g>
+  <path d="M50 154 L54 132 Q66 108 90 96 L132 74 Q168 56 220 52 Q266 50 310 58 L360 72 Q402 88 418 114 L424 154Z" fill="url(#bd3)" stroke="#1c1c1c" stroke-width=".8"/>
+  <path d="M130 76 Q168 56 220 52 Q264 50 308 60 L358 74 Q316 62 248 60 Q198 60 130 76Z" fill="#181818"/>
+  <path d="M198 72 Q224 56 260 52 Q298 52 324 64 L304 88 Q282 76 246 72 Q222 72 198 72Z" fill="url(#gl3)" stroke="#c9a84c" stroke-width=".5" opacity=".88"/>
+  <path d="M306 88 L326 64 L370 86 L350 102Z" fill="url(#gl3)" stroke="#c9a84c" stroke-width=".5" opacity=".65"/>
+  <path d="M52 126 L82 104 L114 104 L110 132 L54 134Z" fill="#0a0a0a" stroke="#c9a84c" stroke-width=".7"/>
+  <line x1="60" y1="118" x2="106" y2="114" stroke="#c9a84c" stroke-width="1.1" opacity=".9"/>
+  <path d="M414 112 L424 120 L424 136 L412 134Z" fill="#c9a84c" opacity=".2" stroke="#c9a84c" stroke-width=".6"/>
+  <path d="M54 146 Q240 138 424 146" fill="none" stroke="#c9a84c" stroke-width="1" opacity=".42"/>
+  <path d="M50 154 L56 146 L76 146 L76 154Z" fill="#0a0a0a" stroke="#c9a84c" stroke-width=".5"/>
+  <rect x="372" y="146" width="14" height="5" rx="1" fill="#c9a84c" opacity=".14" stroke="#c9a84c" stroke-width=".5"/>
+  <rect x="390" y="146" width="14" height="5" rx="1" fill="#c9a84c" opacity=".14" stroke="#c9a84c" stroke-width=".5"/>
+  <!-- DOOR — AMG fastback door -->
+  <g class="door-path">
+    <path d="M170 82 L196 154 L292 154 L292 92 Q258 72 220 70 Q196 70 170 82Z" fill="#1e1818" stroke="#111" stroke-width=".6"/>
+    <line x1="170" y1="82" x2="196" y2="154" stroke="#0e0e0e" stroke-width="1"/>
+    <circle cx="284" cy="120" r="3" fill="#c9a84c" opacity=".45"/>
+  </g>
+  <line x1="294" y1="90" x2="294" y2="154" stroke="#111" stroke-width="1.2"/>
+</svg>`,
+
+  maybach:`<svg viewBox="0 0 480 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="b4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#141210"/><stop offset="100%" stop-color="#080808"/></linearGradient>
+    <linearGradient id="bd4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2a2418"/><stop offset="100%" stop-color="#0e0c0a"/></linearGradient>
+    <linearGradient id="gl4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity=".14"/><stop offset="100%" stop-color="#c9a84c" stop-opacity=".02"/></linearGradient>
+  </defs>
+  <rect width="480" height="190" fill="url(#b4)"/>
+  <ellipse cx="240" cy="166" rx="180" ry="8" fill="rgba(201,168,76,.06)"/>
+  <circle cx="130" cy="152" r="26" fill="#0d0d0d" stroke="#242424" stroke-width="1.5"/><circle cx="130" cy="152" r="17" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="130" cy="152" r="6" fill="#c9a84c" opacity=".52"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="130" y1="135" x2="130" y2="169"/><line x1="113" y1="152" x2="147" y2="152"/><line x1="118" y1="139" x2="142" y2="165"/><line x1="142" y1="139" x2="118" y2="165"/></g>
+  <circle cx="352" cy="152" r="26" fill="#0d0d0d" stroke="#242424" stroke-width="1.5"/><circle cx="352" cy="152" r="17" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="352" cy="152" r="6" fill="#c9a84c" opacity=".52"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="352" y1="135" x2="352" y2="169"/><line x1="335" y1="152" x2="369" y2="152"/><line x1="340" y1="139" x2="364" y2="165"/><line x1="364" y1="139" x2="340" y2="165"/></g>
+  <!-- Extended Maybach body -->
+  <path d="M60 152 L64 126 Q80 100 120 90 L176 74 Q210 64 248 64 Q288 64 322 74 L380 92 Q416 106 420 126 L422 152Z" fill="url(#bd4)" stroke="#1e1e1e" stroke-width=".8"/>
+  <path d="M174 90 Q210 68 248 66 Q288 66 322 76 L378 94 Q340 80 248 78 Q210 78 174 90Z" fill="#1a1a1a"/>
+  <!-- Two-tone Maybach gold divider -->
+  <path d="M64 116 Q244 108 422 116" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity=".52"/>
+  <path d="M182 88 L214 68 Q248 62 278 64 L308 72 L294 94Z" fill="url(#gl4)" stroke="#c9a84c" stroke-width=".5" opacity=".85"/>
+  <path d="M298 94 L312 72 L350 86 L342 98Z" fill="url(#gl4)" stroke="#c9a84c" stroke-width=".5" opacity=".7"/>
+  <path d="M62 106 Q76 96 104 96 L112 114 L64 116Z" fill="#0d0d0d" stroke="#c9a84c" stroke-width=".7"/>
+  <line x1="70" y1="106" x2="106" y2="106" stroke="#c9a84c" stroke-width=".9" opacity=".72"/>
+  <path d="M406 100 L420 108 L420 122 L406 120Z" fill="#c9a84c" opacity=".18" stroke="#c9a84c" stroke-width=".6"/>
+  <!-- DOOR — Maybach rear door (long) -->
+  <g class="door-path">
+    <path d="M176 92 L200 152 L340 152 L340 98 Q296 80 248 76 Q216 76 176 92Z" fill="#201e18" stroke="#111" stroke-width=".6"/>
+    <line x1="176" y1="92" x2="200" y2="152" stroke="#0e0e0e" stroke-width="1"/>
+    <line x1="264" y1="78" x2="264" y2="152" stroke="#111" stroke-width="1"/>
+    <!-- Maybach pillar emblem -->
+    <rect x="270" y="100" width="8" height="8" rx="1" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".5"/>
+    <circle cx="332" cy="126" r="3" fill="#c9a84c" opacity=".45"/>
+  </g>
+  <line x1="342" y1="96" x2="342" y2="152" stroke="#111" stroke-width="1.2"/>
+</svg>`,
+
+  eqs:`<svg viewBox="0 0 480 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="b5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#090c12"/><stop offset="100%" stop-color="#080808"/></linearGradient>
+    <linearGradient id="bd5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#181c24"/><stop offset="100%" stop-color="#080c10"/></linearGradient>
+    <linearGradient id="gl5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity=".14"/><stop offset="100%" stop-color="#c9a84c" stop-opacity=".02"/></linearGradient>
+    <linearGradient id="led5" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="transparent"/><stop offset="50%" stop-color="#c9a84c" stop-opacity=".9"/><stop offset="100%" stop-color="transparent"/></linearGradient>
+  </defs>
+  <rect width="480" height="190" fill="url(#b5)"/>
+  <ellipse cx="240" cy="168" rx="178" ry="8" fill="rgba(201,168,76,.05)"/>
+  <circle cx="134" cy="152" r="26" fill="#0a0a0a" stroke="#1e1e1e" stroke-width="1.5"/><circle cx="134" cy="152" r="17" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="134" cy="152" r="6" fill="#c9a84c" opacity=".48"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="134" y1="135" x2="134" y2="169"/><line x1="117" y1="152" x2="151" y2="152"/><line x1="122" y1="139" x2="146" y2="165"/><line x1="146" y1="139" x2="122" y2="165"/></g>
+  <circle cx="348" cy="152" r="26" fill="#0a0a0a" stroke="#1e1e1e" stroke-width="1.5"/><circle cx="348" cy="152" r="17" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="348" cy="152" r="6" fill="#c9a84c" opacity=".48"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="348" y1="135" x2="348" y2="169"/><line x1="331" y1="152" x2="365" y2="152"/><line x1="336" y1="139" x2="360" y2="165"/><line x1="360" y1="139" x2="336" y2="165"/></g>
+  <!-- EQS smooth fastback -->
+  <path d="M64 152 L68 130 Q80 106 114 94 L170 76 Q206 66 246 66 Q286 66 318 76 L372 96 Q410 112 416 130 L418 152Z" fill="url(#bd5)" stroke="#1c2028" stroke-width=".8"/>
+  <path d="M168 94 Q206 70 246 66 Q286 66 318 78 L370 98 Q330 82 246 80 Q208 80 168 94Z" fill="#141820"/>
+  <path d="M176 92 L210 70 Q246 64 278 68 L310 78 L296 100Z" fill="url(#gl5)" stroke="#c9a84c" stroke-width=".5" opacity=".88"/>
+  <path d="M300 100 L314 78 L360 100 L342 114Z" fill="url(#gl5)" stroke="#c9a84c" stroke-width=".5" opacity=".7"/>
+  <!-- EQS sealed front with LED bar -->
+  <path d="M66 116 Q80 104 110 102 L116 120 L68 122Z" fill="#0a0c10" stroke="#c9a84c" stroke-width=".7" opacity=".6"/>
+  <rect x="66" y="120" width="54" height="2.5" rx="1.2" fill="url(#led5)" opacity=".82"/>
+  <rect x="360" y="120" width="52" height="2.5" rx="1.2" fill="url(#led5)" opacity=".72"/>
+  <path d="M68 136 Q242 128 418 136" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".38"/>
+  <!-- Charge port -->
+  <circle cx="76" cy="110" r="4" fill="none" stroke="#c9a84c" stroke-width=".7" opacity=".48"/>
+  <circle cx="76" cy="110" r="1.5" fill="#c9a84c" opacity=".32"/>
+  <!-- DOOR — EQS -->
+  <g class="door-path">
+    <path d="M196 98 L218 152 L316 152 L316 104 Q284 84 248 82 Q222 82 196 98Z" fill="#161a22" stroke="#111" stroke-width=".6"/>
+    <line x1="196" y1="98" x2="218" y2="152" stroke="#0e0e0e" stroke-width="1"/>
+    <circle cx="308" cy="128" r="3" fill="#c9a84c" opacity=".42"/>
+  </g>
+  <line x1="318" y1="102" x2="318" y2="152" stroke="#111" stroke-width="1.2"/>
+</svg>`,
+
+  eclass:`<svg viewBox="0 0 480 190" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="b6" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#121212"/><stop offset="100%" stop-color="#080808"/></linearGradient>
+    <linearGradient id="bd6" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#242424"/><stop offset="100%" stop-color="#0c0c0c"/></linearGradient>
+    <linearGradient id="gl6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity=".12"/><stop offset="100%" stop-color="#c9a84c" stop-opacity=".02"/></linearGradient>
+  </defs>
+  <rect width="480" height="190" fill="url(#b6)"/>
+  <ellipse cx="240" cy="166" rx="172" ry="8" fill="rgba(201,168,76,.04)"/>
+  <circle cx="136" cy="152" r="24" fill="#0d0d0d" stroke="#222" stroke-width="1.5"/><circle cx="136" cy="152" r="15" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="136" cy="152" r="5" fill="#c9a84c" opacity=".48"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="136" y1="137" x2="136" y2="167"/><line x1="121" y1="152" x2="151" y2="152"/><line x1="125" y1="141" x2="147" y2="163"/><line x1="147" y1="141" x2="125" y2="163"/></g>
+  <circle cx="346" cy="152" r="24" fill="#0d0d0d" stroke="#222" stroke-width="1.5"/><circle cx="346" cy="152" r="15" fill="#080808" stroke="#c9a84c" stroke-width=".9"/><circle cx="346" cy="152" r="5" fill="#c9a84c" opacity=".48"/>
+  <g stroke="#1c1c1c" stroke-width="1.3"><line x1="346" y1="137" x2="346" y2="167"/><line x1="331" y1="152" x2="361" y2="152"/><line x1="335" y1="141" x2="357" y2="163"/><line x1="357" y1="141" x2="335" y2="163"/></g>
+  <path d="M68 152 L72 128 Q86 104 122 94 L176 78 Q208 68 244 68 Q282 68 314 78 L366 96 Q402 112 408 128 L410 152Z" fill="url(#bd6)" stroke="#1e1e1e" stroke-width=".8"/>
+  <path d="M174 94 Q208 72 244 68 Q282 68 314 80 L364 98 Q326 82 244 80 Q208 80 174 94Z" fill="#181818"/>
+  <path d="M182 92 L214 72 Q244 66 274 68 L304 76 L290 98Z" fill="url(#gl6)" stroke="#c9a84c" stroke-width=".5" opacity=".85"/>
+  <path d="M294 98 L308 76 L344 90 L336 102Z" fill="url(#gl6)" stroke="#c9a84c" stroke-width=".5" opacity=".7"/>
+  <!-- E-Class signature dual headlight -->
+  <path d="M70 110 Q82 100 106 100 L114 116 L70 118Z" fill="#0d0d0d" stroke="#c9a84c" stroke-width=".7"/>
+  <line x1="76" y1="108" x2="108" y2="107" stroke="#c9a84c" stroke-width=".9" opacity=".68"/>
+  <line x1="76" y1="113" x2="108" y2="112" stroke="#c9a84c" stroke-width=".5" opacity=".32"/>
+  <path d="M398 106 L410 114 L410 126 L398 124Z" fill="#c9a84c" opacity=".17" stroke="#c9a84c" stroke-width=".6"/>
+  <path d="M70 128 Q240 120 410 128" fill="none" stroke="#c9a84c" stroke-width=".8" opacity=".36"/>
+  <!-- DOOR — E-Class -->
+  <g class="door-path">
+    <path d="M178 96 L200 152 L292 152 L292 100 Q262 82 230 80 Q204 80 178 96Z" fill="#1e1e1e" stroke="#111" stroke-width=".6"/>
+    <line x1="178" y1="96" x2="200" y2="152" stroke="#0e0e0e" stroke-width="1"/>
+    <circle cx="284" cy="126" r="3" fill="#c9a84c" opacity=".42"/>
+  </g>
+  <line x1="294" y1="98" x2="294" y2="152" stroke="#111" stroke-width="1.2"/>
+</svg>`
+};
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let lang = 'uz';
+let openDoor = null; // id of card with door open
+
+// ═══════════════════════════════════════════════════════
+//  RENDER GRID
+// ═══════════════════════════════════════════════════════
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const svgKeys = ['sclass','gwagon','amggt','maybach','eqs','eclass'];
+  const l = I18N[lang];
+
+  grid.innerHTML = CARS.map((car, i) => {
+    const t = car[lang];
+    const isOpen = openDoor === car.id;
+    return `<div class="card${isOpen?' door-open':''}" id="card-${car.id}" data-id="${car.id}">
+      <div class="card-inner">
+        <div class="card-img">
+          ${SVGS[svgKeys[i]]}
+          <div class="card-shimmer"></div>
+          <span class="badge">${car.badge}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-accent"></div>
+          <h3 class="card-name">${t.name}</h3>
+          <p class="card-sub">${t.sub}</p>
+          <p class="card-desc">${t.desc}</p>
+          <div class="card-specs">
+            <div class="spec"><b>${car.specs.hp}</b><s>${l.hp}</s></div>
+            <div class="spec"><b>${car.specs.t60}</b><s>${l.t60}</s></div>
+            <div class="spec"><b>${car.specs.top}</b><s>${l.top}</s></div>
+          </div>
+          <div class="card-foot">
+            <div>
+              <span class="price-lbl">${t.from}</span>
+              <span class="price-val">${car.price}</span>
+            </div>
+            <button class="btn-buy" data-car="${car.id}"><span>${t.buy}</span></button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Attach events
+  grid.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', handleCardClick);
+    setupTilt(card);
+  });
+  grid.querySelectorAll('.btn-buy').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openModal(btn.dataset.car);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  DOOR INTERACTION
+// ═══════════════════════════════════════════════════════
+function handleCardClick(e) {
+  if (e.target.closest('.btn-buy')) return;
+  const id = this.dataset.id;
+  if (openDoor === id) {
+    openDoor = null;
+    this.classList.remove('door-open');
+  } else {
+    if (openDoor) {
+      const prev = document.getElementById('card-' + openDoor);
+      if (prev) prev.classList.remove('door-open');
+    }
+    openDoor = id;
+    this.classList.add('door-open');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  3D TILT
+// ═══════════════════════════════════════════════════════
+function setupTilt(card) {
+  const inner = card.querySelector('.card-inner');
+  // Touch support
+  card.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    const r = card.getBoundingClientRect();
+    const x = (t.clientX - r.left) / r.width - 0.5;
+    const y = (t.clientY - r.top) / r.height - 0.5;
+    inner.style.transform = `rotateY(${x*10}deg) rotateX(${-y*7}deg)`;
+  }, {passive:true});
+  card.addEventListener('touchend', () => {
+    inner.style.transform = '';
+  }, {passive:true});
+  // Mouse
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    inner.style.transform = `rotateY(${x*10}deg) rotateX(${-y*7}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    inner.style.transform = '';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  LANGUAGE SWITCHER
+// ═══════════════════════════════════════════════════════
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === l);
+  });
+  const t = I18N[l];
+  // Update static i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  // Re-render grid (preserves door state)
+  renderGrid();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════
+function openModal(carId) {
+  const car = CARS.find(c => c.id === carId);
+  const t = car[lang];
+  document.getElementById('m-title').textContent = t.name;
+  document.getElementById('m-body').innerHTML = t.mtxt;
+  document.getElementById('m-cta').textContent = t.mcta;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Update config subtitle
+  const sub = document.querySelector('[data-i18n="config"]');
+  if (sub) sub.textContent = I18N[lang].config;
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// Telegram WebApp integration
+if (window.Telegram && window.Telegram.WebApp) {
+  const twa = window.Telegram.WebApp;
+  twa.ready();
+  twa.expand();
+  twa.setHeaderColor('#080808');
+  twa.setBackgroundColor('#080808');
+}
+
+// ─── INIT ───
+renderGrid();
+</script>
 </body>
 </html>
+HTMLEOF
+echo "Done. Size: $(wc -c < /mnt/user-data/outputs/index.html) bytes, Lines: $(wc -l < /mnt/user-data/outputs/index.html)"
 
 
 
