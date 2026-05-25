@@ -2,14 +2,24 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercedes-Benz Avtosaloni</title>
     <link rel="stylesheet" href="style.css">
+    <title>Mercedes-Benz Luxury</title>
 </head>
 <body>
-
-    <script src="main.js"></script>
+    <section class="showroom"><div class="grid" id="grid"></div></section>
+    
     <script src="vending.js"></script>
+    <script>
+        // Katalog ma'lumotlari va asosiy mantiq
+        const CARS = [...]; // Bu yerga oldingi kodingizdagi CARS massivini qo'ying
+        // renderGrid() va boshqa funksiyalarni shu yerga yozing
+        
+        // Telegram WebApp init
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+        }
+    </script>
 </body>
 </html>
+
 
